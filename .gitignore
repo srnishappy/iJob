@@ -1,0 +1,35 @@
+# Node modules
+node_modules/
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS-specific junk
+.DS_Store
+Thumbs.db
+
+# Editor-specific junk
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Build output
+dist/
+build/
+coverage/
+
+# Temporary files
+*.log
+*.tmp
+
+
