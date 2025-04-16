@@ -9,9 +9,11 @@ import {
 
 const router = express.Router();
 
-router.post('/register', isAuthenticated, registerCompany);
-router.get('/get', isAuthenticated, getCompany);
-router.get('/get/:id', isAuthenticated, getCompanyById);
-router.put('/update/:id', isAuthenticated, updateCompany);
+router.use(isAuthenticated);
+
+router.post('/register', registerCompany);
+router.get('/get', getCompany);
+router.get('/get/:id', getCompanyById);
+router.put('/update/:id', updateCompany);
 
 export default router;
