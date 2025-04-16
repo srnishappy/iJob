@@ -46,6 +46,10 @@ export const applyJob = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to apply for job.',
+    });
   }
 };
 export const getAppliedJobs = async (req, res) => {
@@ -102,6 +106,10 @@ export const getApplicants = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to get applicants.',
+    });
   }
 };
 export const updateStatus = async (req, res) => {
