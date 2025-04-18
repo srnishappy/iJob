@@ -1,112 +1,195 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
-import Navbar from "../shared/Navbar";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
-import { User, Briefcase, Lock } from "lucide-react";
+import { useEffect, useState } from 'react';
+import Navbar from '../shared/Navbar';
+import { Label } from '../ui/label';
+import { Input } from '../ui/input';
+import { Button } from '../ui/button';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { USER_API_END_POINT } from '@/utils/constant';
+import { useDispatch, useSelector } from 'react-redux';
+import { setLoading, setUser } from '../../redux/authSlice';
+import { Loader2, Mail, Lock, User, Briefcase } from 'lucide-react';
+import { toast } from 'sonner';
 
 const Login = () => {
-    const [role, setRole] = useState("candidate");
+    const [input, setInput] = useState({
+        email: '',
+        password: '',
+        role: '',
+    });
+    const { loading, user } = useSelector((store) => store.auth);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const changeEventHandler = (e) => {
+        setInput({ ...input, [e.target.name]: e.target.value });
+    };
+
+    const submitHandler = async (e) => {
+        e.preventDefault();
+        try {
+            dispatch(setLoading(true));
+            const res = await axios.post(`${USER_API_END_POINT}/login`, input, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                withCredentials: true,
+            });
+            if (res.data.success) {
+                dispatch(setUser(res.data.user));
+                navigate('/');
+                toast.success(res.data.message);
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error(error.response.data.message);
+        } finally {
+            dispatch(setLoading(false));
+        }
+    };
+
+    useEffect(() => {
+        if (user) {
+            navigate('/');
+        }
+    }, [user, navigate]);
 
     return (
-        <div className="bg-gray-50 min-h-screen flex flex-col">
+        <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
             <Navbar />
-            <div className="max-w-md sm:max-w-lg mx-auto w-full px-4 sm:px-6 py-10 mb-10">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="border border-gray-200 rounded-xl shadow-md overflow-hidden bg-white"
+            <div className="flex justify-center items-center px-4">
+                <form
+                    onSubmit={submitHandler}
+                    className="w-full max-w-xl bg-white border border-gray-200 rounded-2xl p-8 my-12 shadow-lg space-y-6 transition-all duration-500 ease-in-out hover:shadow-xl transform hover:-translate-y-1 relative"
                 >
-                    <div className="px-4 pt-4 pb-4 bg-gradient-to-r from-blue-500 to-blue-400 rounded-t-xl shadow-sm">
-                        <div className="flex flex-col items-center gap-2 mt-4 px-4 py-2">
-                            <span className="text-2xl font-semibold text-white">Login</span>
+                    {/* Progress bar */}
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gray-100">
+                        <div
+                            className="h-full bg-gradient-to-r from-blue-400 to-blue-600 transition-all duration-700 ease-out"
+                            style={{ width: '100%' }}
+                        ></div>
+                    </div>
+
+                    <div className="flex justify-between items-center">
+                        <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
+                            Login
+                        </h2>
+                    </div>
+
+                    <p className="text-gray-500 -mt-2">Log in to your account</p>
+
+                    {/* Email */}
+                    <div className="space-y-2">
+                        <Label className="text-gray-700 font-medium flex items-center">Email</Label>
+                        <div className="relative">
+                            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                            <Input
+                                type="email"
+                                name="email"
+                                value={input.email}
+                                onChange={changeEventHandler}
+                                placeholder="you@example.com"
+                                className="pl-10 py-6 rounded-xl transition-all duration-300 border-gray-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 focus:shadow-md"
+                            />
                         </div>
                     </div>
 
-                    <div className="p-6">
-                        <form className="space-y-5">
-                            {/* Email */}
-                            <div className="space-y-1">
-                                <Label htmlFor="email" className="text-sm font-medium text-gray-800">
-                                    Email
-                                </Label>
-                                <div className="relative">
-                                    <Input
-                                        id="email"
-                                        type="email"
-                                        placeholder="Enter your email address"
-                                        className="w-full p-2 pl-8 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-300"
-                                    />
-                                    <User className="w-4 h-4 text-gray-500 absolute left-3 top-1/2 transform -translate-y-1/2" />
-                                </div>
-                            </div>
-
-                            {/* Password */}
-                            <div className="space-y-1">
-                                <Label htmlFor="password" className="text-sm font-medium text-gray-800">
-                                    Password
-                                </Label>
-                                <div className="relative">
-                                    <Input
-                                        id="password"
-                                        type="password"
-                                        placeholder="Enter your password"
-                                        className="w-full p-2 pl-8 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-300"
-                                    />
-                                    <Lock className="w-4 h-4 text-gray-500 absolute left-3 top-1/2 transform -translate-y-1/2" />
-                                </div>
-                            </div>
-
-                            {/* Role Selection */}
-                            <div className="space-y-2">
-                                <Label className="text-sm font-medium text-gray-800">Select Role</Label>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <button
-                                        type="button"
-                                        onClick={() => setRole("candidate")}
-                                        className={`border rounded-xl p-3 w-full flex flex-col items-center transition-colors ${role === "candidate"
-                                            ? "border-blue-600 bg-blue-50 text-blue-700 shadow-md"
-                                            : "border-gray-300 text-gray-700 hover:bg-blue-100 hover:shadow-sm"
-                                            }`}
-                                    >
-                                        <User className="w-5 h-5 mb-1 text-gray-600" />
-                                        <span className="text-sm font-medium">Candidate</span>
-                                    </button>
-
-                                    <button
-                                        type="button"
-                                        onClick={() => setRole("recruiter")}
-                                        className={`border rounded-xl p-3 w-full flex flex-col items-center transition-colors ${role === "recruiter"
-                                            ? "border-blue-600 bg-blue-50 text-blue-700 shadow-md"
-                                            : "border-gray-300 text-gray-700 hover:bg-blue-100 hover:shadow-sm"
-                                            }`}
-                                    >
-                                        <Briefcase className="w-5 h-5 mb-1 text-gray-600" />
-                                        <span className="text-sm font-medium">Recruiter</span>
-                                    </button>
-                                </div>
-                            </div>
-
-                            {/* Submit Button */}
-                            <div className="pt-2">
-                                <Button
-                                    type="submit"
-                                    className="w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 hover:scale-105 transition-transform shadow-md"
-                                >
-                                    Login
-                                </Button>
-                                <p className="text-center text-sm text-gray-600 mt-4">
-                                    Don&apos;t have an account?{" "}
-                                    <a href="/signup" className="text-blue-600 font-semibold hover:underline">
-                                        Sign up
-                                    </a>
-                                </p>
-                            </div>
-                        </form>
+                    {/* Password */}
+                    <div className="space-y-2">
+                        <Label className="text-gray-700 font-medium flex items-center">Password</Label>
+                        <div className="relative">
+                            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                            <Input
+                                type="password"
+                                name="password"
+                                value={input.password}
+                                onChange={changeEventHandler}
+                                placeholder="Your password"
+                                className="pl-10 py-6 rounded-xl transition-all duration-300 border-gray-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 focus:shadow-md"
+                            />
+                        </div>
                     </div>
-                </motion.div>
+
+                    {/* Role Selection */}
+                    <div className="space-y-3">
+                        <Label className="text-gray-700 font-medium flex items-center">I am a</Label>
+                        <p className="text-sm text-gray-500 -mt-1">Select your role to personalize your experience</p>
+
+                        {/* แยก Role ด้วยการใช้ flex */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-3">
+                            <div
+                                className={`p-4 border rounded-xl transition-all duration-300 cursor-pointer
+                                ${input.role === 'candidate'
+                                        ? 'border-blue-500 bg-blue-50 shadow-md transform scale-[1.02]'
+                                        : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50'}`}
+                                onClick={() => setInput({ ...input, role: 'candidate' })}
+                            >
+                                <div className="flex items-center mb-2">
+                                    <input
+                                        type="radio"
+                                        name="role"
+                                        value="candidate"
+                                        checked={input.role === 'candidate'}
+                                        onChange={changeEventHandler}
+                                        className="h-4 w-4 text-blue-600"
+                                    />
+                                    <div className="ml-3 flex items-center">
+                                        <User className="h-5 w-5 text-blue-600" />
+                                        <span className="font-medium px-1">Candidate</span>
+                                    </div>
+                                </div>
+                                <p className="text-sm text-gray-600 ml-7">Looking for job opportunities and career growth</p>
+                            </div>
+
+                            <div
+                                className={`p-4 border rounded-xl transition-all duration-300 cursor-pointer
+                                ${input.role === 'recruiter'
+                                        ? 'border-purple-500 bg-purple-50 shadow-md transform scale-[1.02]'
+                                        : 'border-gray-200 hover:border-purple-300 hover:bg-purple-50'}`}
+                                onClick={() => setInput({ ...input, role: 'recruiter' })}
+                            >
+                                <div className="flex items-center mb-2">
+                                    <input
+                                        type="radio"
+                                        name="role"
+                                        value="recruiter"
+                                        checked={input.role === 'recruiter'}
+                                        onChange={changeEventHandler}
+                                        className="h-4 w-4 text-purple-600"
+                                    />
+                                    <div className="ml-3 flex items-center">
+                                        <Briefcase className="h-5 w-5 text-purple-600" />
+                                        <span className="font-medium px-1">Recruiter</span>
+                                    </div>
+                                </div>
+                                <p className="text-sm text-gray-600 ml-7">Hiring talent for your organization</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Submit Button */}
+                    {loading ? (
+                        <Button className="w-full bg-blue-500 text-white py-6 rounded-xl transition-all duration-300" disabled>
+                            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                            Logging in...
+                        </Button>
+                    ) : (
+                        <Button
+                            type="submit"
+                            className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white py-6 rounded-xl transition-all duration-500 ease-in-out transform hover:scale-[1.02] active:scale-95 hover:shadow-lg shadow-md"
+                        >
+                            Login
+                        </Button>
+                    )}
+
+                    {/* Signup link */}
+                    <p className="text-center text-gray-600 transition-all duration-300 ease-in-out pt-8">
+                        Don't have an account?{' '}
+                        <Link to="/signup" className="font-medium text-blue-600 hover:text-blue-800 hover:underline transition-colors duration-300">
+                            Sign up
+                        </Link>
+                    </p>
+                </form>
             </div>
         </div>
     );
