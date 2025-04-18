@@ -1,10 +1,12 @@
-import { Button } from "./components/ui/button"
+import Navbar from "./components/shared/Navbar"
 
 const App = () => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-svh">
-      <Button>Click me</Button>
+    <div >
+      <Navbar/>
     </div>
+     
+
   )
 }
 export default App
