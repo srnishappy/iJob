@@ -1,4 +1,6 @@
 import HeroSection from "./HeroSection"
+import LatestJobs from "./LastestJobs"
+import Footer from "./shared/Footer"
 import Navbar from "./shared/Navbar"
 
 const Home = () => {
@@ -7,8 +9,8 @@ const Home = () => {
 
             <Navbar />
             <HeroSection />
-            {/* <LastestJobs/>
-            <Footer/>  */}
+            <LatestJobs />
+            <Footer />
         </div>
     )
 }

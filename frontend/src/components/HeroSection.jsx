@@ -32,7 +32,7 @@ const HeroSection = () => {
                             </Button>
                         </div>
 
-                        {/* ✅ Popular categories */}
+                        {/* categories */}
                         <div className="mt-6 px-4 sm:px-6">
                             <Category />
                         </div>
