@@ -76,7 +76,7 @@ const Login = () => {
                         </h2>
                     </div>
 
-                    <p className="text-gray-500 -mt-2">Log in to your account</p>
+                    <p className="text-gray-500 -mt-2">Continue to iJob</p>
 
                     {/* Email */}
                     <div className="space-y-2">
@@ -112,7 +112,7 @@ const Login = () => {
 
                     {/* Role Selection */}
                     <div className="space-y-3">
-                        <Label className="text-gray-700 font-medium flex items-center">I am a</Label>
+                        <Label className="text-gray-700 font-medium flex items-center">Role</Label>
                         <p className="text-sm text-gray-500 -mt-1">Select your role to personalize your experience</p>
 
                         {/* แยก Role ด้วยการใช้ flex */}
@@ -135,7 +135,7 @@ const Login = () => {
                                     />
                                     <div className="ml-3 flex items-center">
                                         <User className="h-5 w-5 text-blue-600" />
-                                        <span className="font-medium px-1">Candidate</span>
+                                        <span className="font-medium px-2">Candidate</span>
                                     </div>
                                 </div>
                                 <p className="text-sm text-gray-600 ml-7">Looking for job opportunities and career growth</p>
@@ -159,7 +159,7 @@ const Login = () => {
                                     />
                                     <div className="ml-3 flex items-center">
                                         <Briefcase className="h-5 w-5 text-purple-600" />
-                                        <span className="font-medium px-1">Recruiter</span>
+                                        <span className="font-medium px-2">Recruiter</span>
                                     </div>
                                 </div>
                                 <p className="text-sm text-gray-600 ml-7">Hiring talent for your organization</p>

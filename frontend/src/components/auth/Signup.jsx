@@ -119,7 +119,7 @@ const Signup = () => {
                         <span className="text-sm font-medium text-gray-500">{getCompletionPercentage()}% Complete</span>
                     </div>
 
-                    <p className="text-gray-500 -mt-2">Sign up for iJob – Find or Recruit Talent</p>
+                    <p className="text-gray-500 -mt-2">Get Started with iJob</p>
 
                     {/* Fullname */}
                     <div className="space-y-2 transition duration-300 ease-in-out transform hover:scale-[1.01]">
@@ -213,7 +213,7 @@ const Signup = () => {
                     {/* Role Selection */}
                     <div className="space-y-3">
                         <Label className="text-gray-700 font-medium flex items-center">
-                            I am a
+                            Role
                             {formSteps.role && (
                                 <CheckCircle2 className="ml-2 h-4 w-4 text-green-500 animate-pulse" />
                             )}
@@ -265,7 +265,7 @@ const Signup = () => {
                                         value="recruiter"
                                         checked={input.role === 'recruiter'}
                                         onChange={changeEventHandler}
-                                        className="h-4 w-4 text-purple-600"
+                                        className="h-4 w-4 text-blue-500"
                                     />
                                     <div className="ml-3 flex items-center">
                                         <Briefcase className="h-5 w-5 text-purple-600 mr-2" />
@@ -303,7 +303,6 @@ const Signup = () => {
                                         <div className="bg-blue-100 p-2 rounded-full mb-2">
                                             <Upload className="h-6 w-6 text-blue-500" />
                                         </div>
-                                        <p className="text-sm font-medium">Drop your photo here or</p>
                                     </>
                                 )}
 
