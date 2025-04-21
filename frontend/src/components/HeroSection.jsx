@@ -24,7 +24,7 @@ const HeroSection = () => {
                         <div className="flex w-full max-w-lg shadow-lg border border-gray-200 pl-5 rounded-full items-center gap-3 mx-auto mt-6">
                             <input
                                 type="text"
-                                placeholder="Find your dream job"
+                                placeholder=""
                                 className="outline-none border-none w-full text-sm text-gray-700 placeholder-gray-400"
                             />
                             <Button className="rounded-r-full bg-blue-500">
