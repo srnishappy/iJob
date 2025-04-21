@@ -16,10 +16,10 @@ const Navbar = () => {
 
         {/* Brand */}
         <div className="flex items-center gap-3">
-          <div className="text-xl font-bold tracking-tight flex items-center gap-1">
+          <Link to="/" className="text-xl font-bold tracking-tight flex items-center gap-1">
             <span className="text-white">i</span>
             <span className="text-blue-500">Job</span>
-          </div>
+          </Link>
           <span className="bg-blue-500 text-white text-[10px] px-3 py-1 rounded-full font-semibold tracking-wide mt-1">
             Find a job
           </span>
@@ -34,21 +34,18 @@ const Navbar = () => {
 
         {/* Nav Menu Desktop */}
         <nav className="hidden md:flex items-center gap-10">
-          {[
-            { to: '/', icon: Home, label: 'Home' },
-            { to: '/jobs', icon: Briefcase, label: 'Jobs' },
-            { to: '/browse', icon: Search, label: 'Browse' },
-          ].map(({ to, icon: Icon, label }) => (
-            <Link
-              key={label}
-              to={to}
-              className="flex flex-col items-center text-sm text-gray-300 hover:text-blue-400 transition group"
-            >
-              <Icon size={18} />
-              <span>{label}</span>
-              <div className="h-0.5 w-full bg-blue-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left mt-0.5"></div>
-            </Link>
-          ))}
+          {[{ to: '/', icon: Home, label: 'Home' }, { to: '/jobs', icon: Briefcase, label: 'Jobs' }, { to: '/browse', icon: Search, label: 'Browse' }]
+            .map(({ to, icon: Icon, label }) => (
+              <Link
+                key={label}
+                to={to}
+                className="flex flex-col items-center text-sm text-gray-300 hover:text-blue-400 transition group"
+              >
+                <Icon size={18} />
+                <span>{label}</span>
+                <div className="h-0.5 w-full bg-blue-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left mt-0.5"></div>
+              </Link>
+            ))}
         </nav>
 
         {/* User Section */}
@@ -111,21 +108,18 @@ const Navbar = () => {
       {/* Mobile Menu Dropdown */}
       {menuOpen && (
         <div className="md:hidden bg-gray-800 border-t border-gray-700 px-6 py-4 space-y-3">
-          {[
-            { to: '/', icon: Home, label: 'Home' },
-            { to: '/jobs', icon: Briefcase, label: 'Jobs' },
-            { to: '/browse', icon: Search, label: 'Browse' },
-          ].map(({ to, icon: Icon, label }) => (
-            <Link
-              key={label}
-              to={to}
-              className="flex items-center gap-2 text-gray-300 hover:text-blue-400 transition"
-              onClick={() => setMenuOpen(false)}
-            >
-              <Icon size={18} />
-              <span>{label}</span>
-            </Link>
-          ))}
+          {[{ to: '/', icon: Home, label: 'Home' }, { to: '/jobs', icon: Briefcase, label: 'Jobs' }, { to: '/browse', icon: Search, label: 'Browse' }]
+            .map(({ to, icon: Icon, label }) => (
+              <Link
+                key={label}
+                to={to}
+                className="flex items-center gap-2 text-gray-300 hover:text-blue-400 transition"
+                onClick={() => setMenuOpen(false)}
+              >
+                <Icon size={18} />
+                <span>{label}</span>
+              </Link>
+            ))}
 
           {!user && (
             <div className="pt-3 border-t border-gray-700 flex gap-2">

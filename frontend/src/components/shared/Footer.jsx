@@ -24,11 +24,16 @@ const Footer = () => {
                         <h3 className="text-white font-semibold mb-3">Quick Links</h3>
                         <ul className="space-y-2">
                             <li>
+                                <Link to="/" className="text-gray-400 hover:text-blue-400 transition text-sm">Home</Link>
+                            </li>
+                            <li>
                                 <Link to="/jobs" className="text-gray-400 hover:text-blue-400 transition text-sm">Jobs</Link>
                             </li>
                             <li>
                                 <Link to="/browse" className="text-gray-400 hover:text-blue-400 transition text-sm">Browse</Link>
                             </li>
+
+
 
                         </ul>
                     </div>
@@ -38,7 +43,6 @@ const Footer = () => {
                         <h3 className="text-white font-semibold mb-3">Contact Us</h3>
                         <div className="text-sm text-gray-400 space-y-2">
                             <p>Email: srnishappy@gmail.com</p>
-                            <p>Phone: +1 (555) 123-4567</p>
                             <div className="flex space-x-4 pt-2">
                                 <a target="_blank"
                                     href="https://www.facebook.com/kong.157284/" className="hover:text-blue-400 transition" aria-label="Facebook">
