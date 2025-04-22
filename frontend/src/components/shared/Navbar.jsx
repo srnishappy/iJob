@@ -5,10 +5,11 @@ import { Avatar, AvatarImage } from '../ui/avatar';
 import { AvatarFallback } from '@radix-ui/react-avatar';
 import { Button } from '../ui/button';
 import { Home, Briefcase, Search, User, LogOut, Menu } from 'lucide-react';
+import { useSelector } from 'react-redux';
 
 const Navbar = () => {
-  const user = false;
   const [menuOpen, setMenuOpen] = useState(false);
+  const { user } = useSelector((store) => store.auth);
 
   return (
     <header className="bg-gray-900 text-white shadow-sm border-b border-gray-800">
@@ -65,7 +66,7 @@ const Navbar = () => {
         ) : (
           <Popover>
             <PopoverTrigger asChild>
-              <div className="flex items-center gap-2 cursor-pointer bg-gray-800 px-3 py-1.5 rounded-full border border-gray-700 hover:border-gray-500 transition">
+              <div className="hidden md:flex items-center gap-2 cursor-pointer bg-gray-800 px-3 py-1.5 rounded-full border border-gray-700 hover:border-gray-500 transition">
                 <Avatar className="h-8 w-8 ring-2 ring-blue-500">
                   <AvatarImage src="https://github.com/shadcn.png" alt="avatar" />
                   <AvatarFallback className="bg-gray-700 text-gray-200">SC</AvatarFallback>
@@ -93,7 +94,7 @@ const Navbar = () => {
               <div className="p-2">
                 <div className="text-xs text-gray-500 uppercase px-2 py-1">Account</div>
                 <Button variant="ghost" className="w-full justify-start text-gray-300 hover:text-white hover:bg-gray-700">
-                  <User size={16} className="mr-2" /> View Profile
+                  <User size={16} className="mr-2" /> <Link to="/profile"> View Profile</Link>
                 </Button>
                 <div className="text-xs text-gray-500 uppercase px-2 py-1 mt-3">Session</div>
                 <Button variant="ghost" className="w-full justify-start text-red-400 hover:text-red-300 hover:bg-gray-700">
@@ -133,6 +134,33 @@ const Navbar = () => {
                   Signup
                 </Button>
               </Link>
+            </div>
+          )}
+
+          {user && (
+            <div className="pt-4 border-t border-gray-700">
+              <div className="flex items-center gap-3 mb-3">
+                <Avatar className="h-10 w-10 ring-2 ring-blue-500">
+                  <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                  <AvatarFallback className="bg-gray-700 text-gray-200">SC</AvatarFallback>
+                </Avatar>
+                <div>
+                  <h4 className="text-white text-sm font-medium">@shadcn</h4>
+                  <p className="text-xs text-gray-400">Full-stack Developer</p>
+                </div>
+              </div>
+              <Button
+                variant="ghost"
+                className="w-full justify-start text-gray-300 hover:text-white hover:bg-gray-700"
+              >
+                <User size={16} className="mr-2" />  <Link to="/profile"> View Profile</Link>
+              </Button>
+              <Button
+                variant="ghost"
+                className="w-full justify-start text-red-400 hover:text-red-300 hover:bg-gray-700 mt-2"
+              >
+                <LogOut size={16} className="mr-2" /> Logout
+              </Button>
             </div>
           )}
         </div>
