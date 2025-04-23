@@ -6,6 +6,7 @@ import { Avatar, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Label } from "./ui/label";
+import AppliedJobTable from "./AppliedJobTable";
 
 const Profile = () => {
     const [open, setOpen] = useState(false);
@@ -124,7 +125,7 @@ const Profile = () => {
                     className="text-gray-600 italic"
                     variants={itemVariants}
                 >
-                    {/* Application Table */}
+                    <AppliedJobTable />
                 </motion.div>
             </motion.div>
             {/* <UpdateProfileDialog open={open} setOpen={setOpen} /> */}
