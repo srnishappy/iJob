@@ -7,6 +7,7 @@ import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Label } from "./ui/label";
 import AppliedJobTable from "./AppliedJobTable";
+import UpdateProfileDialog from "./UpdateProfileDialog";
 
 const Profile = () => {
     const [open, setOpen] = useState(false);
@@ -49,6 +50,7 @@ const Profile = () => {
                     </motion.div>
                     <motion.div variants={itemVariants}>
                         <Button
+                            onClick={() => setOpen(true)}
                             className="text-blue-500 hover:text-blue-400 hover:bg-gray-200 transition"
                             variant="outline"
                         >
@@ -128,7 +130,7 @@ const Profile = () => {
                     <AppliedJobTable />
                 </motion.div>
             </motion.div>
-            {/* <UpdateProfileDialog open={open} setOpen={setOpen} /> */}
+            <UpdateProfileDialog open={open} setOpen={setOpen} />
         </div>
     );
 };
