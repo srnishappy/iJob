@@ -102,59 +102,65 @@ export const login = async (req, res) => {
 };
 export const updateProfile = async (req, res) => {
   try {
+    // ดึงข้อมูลจาก req.body
     const { fullname, email, phoneNumber, bio, skills } = req.body;
-
+    
+    // ตรวจสอบว่ามีไฟล์หรือไม่
     const file = req.file;
-    const fileUri = getDataUri(file);
-    const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
 
     let skillsArray;
     if (skills) {
-      skillsArray = skills.split(',');
+      skillsArray = skills.split(",");
     }
+
     const userId = req.id; // middleware authentication
     let user = await User.findById(userId);
 
     if (!user) {
       return res.status(400).json({
-        success: false,
-
-        message: 'User not found.',
+        message: "User not found.",
+        success: false
       });
     }
-    // updating data
+
+    // อัพเดตข้อมูล
     if (fullname) user.fullname = fullname;
     if (email) user.email = email;
     if (phoneNumber) user.phoneNumber = phoneNumber;
     if (bio) user.profile.bio = bio;
     if (skills) user.profile.skills = skillsArray;
+    
+    // ตรวจสอบว่ามีไฟล์ (Resume) หรือไม่
+    if (file) {
+      user.profile.resume = file.path;  // หรือจะเป็น file.buffer ขึ้นอยู่กับวิธีที่คุณใช้จัดการไฟล์
+      user.profile.resumeOriginalName = file.originalname; // บันทึกชื่อไฟล์เดิม
+    }
 
-    // resume comes later here...
-    // if (cloudResponse) {
-    //   user.profile.resume = cloudResponse.secure_url; // save the cloudinary url
-    //   user.profile.resumeOriginalName = file.originalname; // Save the original file name
-    // }
-
+    // บันทึกข้อมูลที่อัพเดต
     await user.save();
 
+    // เตรียมข้อมูลผู้ใช้เพื่อส่งกลับ
     user = {
       _id: user._id,
       fullname: user.fullname,
       email: user.email,
       phoneNumber: user.phoneNumber,
       role: user.role,
-      profile: user.profile,
+      profile: user.profile
     };
 
     return res.status(200).json({
-      success: true,
-      message: 'Profile updated successfully.',
+      message: "Profile updated successfully.",
       user,
+      success: true
     });
+
   } catch (error) {
     console.log(error);
+    return res.status(500).json({ message: "Server error" });
   }
 };
+
 export const logout = async (req, res) => {
   try {
     return res.status(200).cookie('token', '', { maxAge: 0 }).json({
