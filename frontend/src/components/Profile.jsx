@@ -66,11 +66,11 @@ const Profile = () => {
                     <div className="flex flex-col">
                         <div className="flex items-center">
                             <User className="h-4 w-4 mr-2 text-gray-500" />
-                            <h1 className="font-bold text-xl">{user?.fullname || "rung"}</h1>
+                            <h1 className="font-bold text-xl">{user?.fullname || "No name available"}</h1>
                         </div>
                         <div className="flex items-center mt-1">
                             <MessageCircle className="h-3 w-3 mr-2 text-gray-400" />
-                            <p className="text-gray-500 text-sm">{user?.profile?.bio || "find job"}</p>
+                            <p className="text-gray-500 text-sm">{user?.profile?.bio || "No bio available"}</p>
                         </div>
                     </div>
 
@@ -181,7 +181,7 @@ const Profile = () => {
                             {isResume ? (
                                 <a
                                     target="_blank"
-                                    href={user.profile.resume}
+                                    href={user?.profile?.resume}
                                     className="text-blue-500 hover:text-blue-600 hover:underline flex items-center bg-blue-50 p-2 rounded-md"
                                 >
                                     <FileText className="h-4 w-4 mr-2" />

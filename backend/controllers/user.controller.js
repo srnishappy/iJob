@@ -1,6 +1,8 @@
 import { User } from '../models/user.model.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import getDataUri from "../utils/datauri.js";
+import cloudinary from "../utils/cloudinary.js";
 export const register = async (req, res) => {
   try {
     const { fullname, email, phoneNumber, password, role } = req.body;
@@ -100,47 +102,51 @@ export const login = async (req, res) => {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
+
 export const updateProfile = async (req, res) => {
   try {
-    // ดึงข้อมูลจาก req.body
     const { fullname, email, phoneNumber, bio, skills } = req.body;
-    
-    // ตรวจสอบว่ามีไฟล์หรือไม่
     const file = req.file;
+    const userId = req.id; // from auth middleware
 
-    let skillsArray;
-    if (skills) {
-      skillsArray = skills.split(",");
-    }
-
-    const userId = req.id; // middleware authentication
     let user = await User.findById(userId);
-
     if (!user) {
-      return res.status(400).json({
-        message: "User not found.",
-        success: false
-      });
+      return res.status(404).json({ message: "User not found.", success: false });
     }
 
-    // อัพเดตข้อมูล
+    // Convert skills string to array
+    let skillsArray = [];
+    if (skills) {
+      skillsArray = skills.split(",").map(skill => skill.trim()).filter(Boolean);
+    }
+
+    // Update basic fields
     if (fullname) user.fullname = fullname;
     if (email) user.email = email;
     if (phoneNumber) user.phoneNumber = phoneNumber;
     if (bio) user.profile.bio = bio;
     if (skills) user.profile.skills = skillsArray;
-    
-    // ตรวจสอบว่ามีไฟล์ (Resume) หรือไม่
+
+    // Handle file upload if file is present
     if (file) {
-      user.profile.resume = file.path;  // หรือจะเป็น file.buffer ขึ้นอยู่กับวิธีที่คุณใช้จัดการไฟล์
-      user.profile.resumeOriginalName = file.originalname; // บันทึกชื่อไฟล์เดิม
+      const fileUri = getDataUri(file);
+      const cloudResponse = await cloudinary.uploader.upload(fileUri.content, {
+        resource_type: "raw", // <<<< สำคัญมาก
+        public_id: `resumes/${userId}_resume`,
+        folder: "resumes",
+        use_filename: true,
+        unique_filename: false,
+        overwrite: true,
+      });
+      
+      user.profile.resume = cloudResponse.secure_url;
+      user.profile.resumeOriginalName = file.originalname;
     }
 
-    // บันทึกข้อมูลที่อัพเดต
     await user.save();
 
-    // เตรียมข้อมูลผู้ใช้เพื่อส่งกลับ
-    user = {
+    // Return only necessary fields
+    const updatedUser = {
       _id: user._id,
       fullname: user.fullname,
       email: user.email,
@@ -151,15 +157,18 @@ export const updateProfile = async (req, res) => {
 
     return res.status(200).json({
       message: "Profile updated successfully.",
-      user,
+      user: updatedUser,
       success: true
     });
-
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: "Server error" });
+    console.error("Update Profile Error:", error);
+    return res.status(500).json({
+      message: "Something went wrong while updating profile.",
+      success: false
+    });
   }
 };
+
 
 export const logout = async (req, res) => {
   try {

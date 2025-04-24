@@ -11,10 +11,10 @@ import { Button } from "./ui/button";
 import { Loader2, User, Mail, Phone, Info, Code2, FileText } from "lucide-react";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import axios from 'axios'
-import { USER_API_END_POINT } from '@/utils/constant'
-import { setUser } from '@/redux/authSlice'
-import { toast } from 'sonner'
+import axios from 'axios';
+import { USER_API_END_POINT } from '@/utils/constant';
+import { setUser } from '@/redux/authSlice';
+import { toast } from 'sonner';
 
 const UpdateProfileDialog = ({ open, setOpen }) => {
     const dispatch = useDispatch();
@@ -28,6 +28,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
         bio: user?.profile?.bio || "",
         skills: user?.profile?.skills?.join(", ") || "",
         file: user?.profile?.resume || "",
+        fileUrl: "",  // เพิ่มสถานะสำหรับเก็บ URL ของไฟล์
     });
 
     const changeEventHandler = (e) => {
@@ -36,7 +37,9 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
 
     const fileChangeHandler = (e) => {
         const file = e.target.files?.[0];
-        setInput({ ...input, file });
+        if (file) {
+            setInput({ ...input, file, fileUrl: URL.createObjectURL(file) }); // สร้าง URL สำหรับไฟล์ PDF
+        }
     };
 
     const submitHandler = async (e) => {
@@ -177,6 +180,20 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                                 className="col-span-3 bg-white border border-gray-300 rounded-md file:text-blue-500"
                             />
                         </div>
+
+                        {/* Display PDF Preview */}
+                        {input.fileUrl && input.fileUrl.endsWith(".pdf") && (
+                            <div className="mt-4">
+                                <h3 className="text-sm font-medium text-gray-700 mb-2">Resume Preview:</h3>
+                                <iframe
+                                    src={input.fileUrl}  // ใช้ URL ของไฟล์ PDF
+                                    width="100%"
+                                    height="500px"
+                                    title="Resume Preview"
+                                    style={{ border: "1px solid #ccc", borderRadius: "8px" }}
+                                />
+                            </div>
+                        )}
                     </div>
 
                     {/* Footer */}
