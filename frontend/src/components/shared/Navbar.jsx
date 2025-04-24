@@ -1,16 +1,34 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Avatar, AvatarImage } from '../ui/avatar';
 import { AvatarFallback } from '@radix-ui/react-avatar';
 import { Button } from '../ui/button';
 import { Home, Briefcase, Search, User, LogOut, Menu } from 'lucide-react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { toast } from 'sonner';
+import axios from 'axios';
+import { USER_API_END_POINT } from '@/utils/constant';
+import { setUser } from '@/redux/authSlice';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const { user } = useSelector((store) => store.auth);
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const logoutHandler = async () => {
+    try {
+      const res = await axios.post(`${USER_API_END_POINT}/logout`, { withCredentials: true });
+      if (res.data.success) {
+        dispatch(setUser(null));
+        navigate("/");
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+    }
+  }
   return (
     <header className="bg-gray-900 text-white shadow-sm border-b border-gray-800">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -84,10 +102,6 @@ const Navbar = () => {
                   <div>
                     <h4 className="font-medium text-white">@shadcn</h4>
                     <p className="text-sm text-gray-400">Full-stack Developer</p>
-                    <div className="mt-1 flex items-center gap-1">
-                      <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                      <span className="text-xs text-green-400">Online</span>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -97,7 +111,9 @@ const Navbar = () => {
                   <User size={16} className="mr-2" /> <Link to="/profile"> View Profile</Link>
                 </Button>
                 <div className="text-xs text-gray-500 uppercase px-2 py-1 mt-3">Session</div>
-                <Button variant="ghost" className="w-full justify-start text-red-400 hover:text-red-300 hover:bg-gray-700">
+                <Button
+                  onClick={logoutHandler}
+                  variant="ghost" className="w-full justify-start text-red-400 hover:text-red-300 hover:bg-gray-700">
                   <LogOut size={16} className="mr-2" /> Logout
                 </Button>
               </div>
@@ -156,6 +172,7 @@ const Navbar = () => {
                 <User size={16} className="mr-2" />  <Link to="/profile"> View Profile</Link>
               </Button>
               <Button
+                onClick={logoutHandler}
                 variant="ghost"
                 className="w-full justify-start text-red-400 hover:text-red-300 hover:bg-gray-700 mt-2"
               >
