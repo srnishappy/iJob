@@ -11,6 +11,9 @@ export const register = async (req, res) => {
         .status(400)
         .json({ success: false, message: 'All fields are required' });
     }
+    const file = req.file;
+    const fileUri = getDataUri(file);
+    const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
     const user = await User.findOne({ email });
     if (user) {
       return res
@@ -25,6 +28,9 @@ export const register = async (req, res) => {
       phoneNumber,
       password: hashedPassword,
       role,
+      profile:{
+        profilePhoto:cloudResponse.secure_url,
+    }
     });
 
     return res.status(201).json({
