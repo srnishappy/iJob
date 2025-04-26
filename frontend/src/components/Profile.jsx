@@ -58,7 +58,7 @@ const Profile = () => {
                     {/* Avatar */}
                     <div className="mr-4">
                         <Avatar className="h-16 w-16 ring-2 ring-gray-100 shadow-sm">
-                            <AvatarImage src="https://github.com/shadcn.png" alt="profile" />
+                            <AvatarImage src={user?.profile?.profilePhoto} alt="profile" />
                         </Avatar>
                     </div>
 
@@ -128,9 +128,12 @@ const Profile = () => {
                                 <div>
                                     <span className="text-sm font-medium text-gray-600 mr-2">Phone :</span>
                                     {user?.phoneNumber ? (
-                                        <p className="text-gray-800 font-medium">
+                                        <a
+                                            href={`tel:${user.phoneNumber}`}
+                                            className="text-blue-600 hover:text-blue-700 hover:underline font-medium transition-all duration-200"
+                                        >
                                             {formatPhoneNumber(user.phoneNumber)}
-                                        </p>
+                                        </a>
                                     ) : (
                                         <span className="text-gray-500 border border-gray-200 rounded-lg p-1 bg-gray-50">
                                             No contact number available
@@ -138,6 +141,7 @@ const Profile = () => {
                                     )}
                                 </div>
                             </div>
+
                         </div>
                     </motion.div>
 

@@ -28,6 +28,7 @@ const Navbar = () => {
       console.log(error);
       toast.error(error.response.data.message);
     }
+
   }
   return (
     <header className="bg-gray-900 text-white shadow-sm border-b border-gray-800">
@@ -86,22 +87,21 @@ const Navbar = () => {
             <PopoverTrigger asChild>
               <div className="hidden md:flex items-center gap-2 cursor-pointer bg-gray-800 px-3 py-1.5 rounded-full border border-gray-700 hover:border-gray-500 transition">
                 <Avatar className="h-8 w-8 ring-2 ring-blue-500">
-                  <AvatarImage src="https://github.com/shadcn.png" alt="avatar" />
-                  <AvatarFallback className="bg-gray-700 text-gray-200">SC</AvatarFallback>
+                  <AvatarImage src={user?.profile?.profilePhoto} alt="avatar" />
                 </Avatar>
-                <span className="text-sm font-medium hidden md:block">@shadcn</span>
+                <span className="text-sm font-medium hidden md:block">{user.fullname}</span>
               </div>
             </PopoverTrigger>
             <PopoverContent className="w-80 p-0 bg-gray-800 text-gray-200 border border-gray-700 rounded-lg shadow-xl" align="end">
               <div className="p-4 border-b border-gray-700 bg-gray-800">
                 <div className="flex items-center gap-4">
                   <Avatar className="h-14 w-14 ring-2 ring-blue-500">
-                    <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                    <AvatarImage src={user?.profile?.profilePhoto} alt="@shadcn" />
                     <AvatarFallback className="bg-gray-700 text-gray-200">SC</AvatarFallback>
                   </Avatar>
                   <div>
-                    <h4 className="font-medium text-white">@shadcn</h4>
-                    <p className="text-sm text-gray-400">Full-stack Developer</p>
+                    <h4 className="font-medium text-white">{user.fullname}</h4>
+                    <p className="text-sm text-gray-400">{user?.profile?.bio}</p>
                   </div>
                 </div>
               </div>
@@ -157,12 +157,12 @@ const Navbar = () => {
             <div className="pt-4 border-t border-gray-700">
               <div className="flex items-center gap-3 mb-3">
                 <Avatar className="h-10 w-10 ring-2 ring-blue-500">
-                  <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                  <AvatarImage src={user?.profile?.profilePhoto} alt="@shadcn" />
                   <AvatarFallback className="bg-gray-700 text-gray-200">SC</AvatarFallback>
                 </Avatar>
                 <div>
-                  <h4 className="text-white text-sm font-medium">@shadcn</h4>
-                  <p className="text-xs text-gray-400">Full-stack Developer</p>
+                  <h4 className="text-white text-sm font-medium">{user.fullname}</h4>
+                  <p className="text-xs text-gray-400">{user?.profile?.bio}</p>
                 </div>
               </div>
               <Button
