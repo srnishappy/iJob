@@ -1,81 +1,126 @@
-import { Button } from './ui/button'
-import { Bookmark, Clock } from 'lucide-react'
-import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar'
-import { Badge } from './ui/badge'
-import { useNavigate } from 'react-router-dom'
+import { Button } from './ui/button';
+import { MapPin, Briefcase, User, Clock, Award, ChevronRight, Bookmark } from 'lucide-react';
+import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
+import { useNavigate } from 'react-router-dom';
 
 const Job = ({ job }) => {
     const navigate = useNavigate();
 
     const daysAgoFunction = (mongodbTime) => {
-        // ตรวจสอบว่า mongodbTime มีค่าหรือไม่
-        if (!mongodbTime) return "New";
-
+        if (!mongodbTime) return 'New';
         try {
             const createdAt = new Date(mongodbTime);
-            // ตรวจสอบว่า createdAt เป็นวันที่ที่ถูกต้องหรือไม่
-            if (isNaN(createdAt.getTime())) return "New";
-
+            if (isNaN(createdAt.getTime())) return 'New';
             const currentTime = new Date();
             const timeDifference = currentTime - createdAt;
             const daysAgo = Math.floor(timeDifference / (1000 * 24 * 60 * 60));
-
-            return daysAgo === 0 ? "Today" : `${daysAgo} days ago`;
+            return daysAgo === 0 ? 'Today' : `${daysAgo} days ago`;
         } catch (error) {
-            return "New";
+            return 'New';
         }
-    }
+    };
 
-    // ฟังก์ชันสำหรับสร้างตัวอักษรแรกของชื่อบริษัท
     const getCompanyInitial = (companyName) => {
-        if (!companyName) return "C";
+        if (!companyName) return 'C';
         return companyName.charAt(0).toUpperCase();
-    }
+    };
+
+    const formatSalary = (salary) => {
+        if (!salary) return 'Not specified';
+        return `${salary.toLocaleString()}`;
+    };
 
     return (
-        <div className='p-4 sm:p-5 rounded-lg shadow-md bg-white border border-gray-200 hover:shadow-lg transition-all duration-300'>
-            <div className='flex items-center justify-between'>
-                <div className="flex items-center text-gray-500">
-                    <Clock size={14} className="mr-1" />
-                    <p className='text-xs sm:text-sm font-medium'>{daysAgoFunction(job?.createdAt)}</p>
+        <div className="h-full flex flex-col justify-between p-6 rounded-2xl shadow-lg bg-white border border-gray-200 cursor-pointer transform hover:scale-105 transition-all duration-300 ease-in-out hover:shadow-xl relative overflow-hidden group">
+            {/* Decorative elements */}
+            <div className="absolute top-0 right-0 w-16 h-16 bg-blue-500 opacity-10 rounded-full -mr-8 -mt-8"></div>
+            <div className="absolute bottom-0 left-0 w-24 h-24 bg-blue-500 opacity-5 rounded-full -ml-12 -mb-12"></div>
+
+            {/* Company header */}
+            <div className="mb-4 -m-6 p-6 bg-gray-900 rounded-t-2xl border-b-4 border-blue-500 relative">
+                <div className="flex justify-between items-start">
+                    <div className="flex items-center gap-3">
+                        {job?.company?.logo ? (
+                            <Avatar className="w-12 h-12 rounded-full border-2 border-gray-700">
+                                <AvatarImage src={job.company.logo} alt={job?.company?.name || 'Company'} />
+                                <AvatarFallback className="bg-blue-100 text-blue-600 font-bold">
+                                    {getCompanyInitial(job?.company?.name)}
+                                </AvatarFallback>
+                            </Avatar>
+                        ) : (
+                            <Avatar className="w-12 h-12 rounded-full border-2 border-gray-700">
+                                <AvatarFallback className="bg-blue-100 text-blue-600 font-bold">
+                                    {getCompanyInitial(job?.company?.name)}
+                                </AvatarFallback>
+                            </Avatar>
+                        )}
+                        <div>
+                            <h1 className="font-bold text-xl sm:text-2xl text-white">{job?.company?.name || 'Unknown Company'}</h1>
+                            <div className="mt-2 flex items-center text-gray-400">
+                                <Clock size={16} className="mr-1" />
+                                <span className="text-sm">{daysAgoFunction(job?.createdAt)}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <Button
+                        variant="ghost"
+                        className="rounded-full hover:bg-gray-700 h-8 w-8 p-0"
+                        size="icon"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                        }}
+                    >
+                        <Bookmark className="text-gray-400 hover:text-blue-500" size={16} />
+                    </Button>
                 </div>
-                <Button variant="ghost" className="rounded-full hover:bg-gray-100 h-8 w-8 p-0" size="icon">
-                    <Bookmark className="text-gray-400 hover:text-blue-500" size={16} />
-                </Button>
+                {job?.location && (
+                    <div className="mt-2 flex items-center text-gray-400">
+                        <MapPin size={16} className="mr-1" />
+                        <span className="text-sm">{job.location}</span>
+                    </div>
+                )}
             </div>
 
-            <div className='flex items-center gap-3 my-3'>
-                <div className="h-12 w-12 rounded-md overflow-hidden border border-gray-200">
-                    <Avatar className="h-full w-full">
-                        <AvatarImage src={job?.company?.logo} alt={job?.company?.name || "Company"} />
-                        <AvatarFallback className="bg-blue-100 text-blue-600 font-bold">
-                            {getCompanyInitial(job?.company?.name)}
-                        </AvatarFallback>
-                    </Avatar>
+            {/* Job details */}
+            <div className="flex-1 mt-6 mb-3">
+                <h2 className="font-semibold text-lg sm:text-xl text-gray-800 mb-2 border-l-4 border-blue-500 pl-3">
+                    {job?.title || 'No Title'}
+                </h2>
+                <p className="text-sm text-gray-600 mb-4 pl-4 break-words whitespace-pre-wrap">
+                    {job?.description || 'No description available.'}
+                </p>
+
+                {/* Job details items */}
+                <div className="grid grid-cols-1 gap-3 mb-4">
+                    {job?.experience && (
+                        <div className="flex items-center p-2 rounded-lg border border-gray-100 bg-gray-50 shadow-sm w-full">
+                            <Award size={16} className="mr-2 text-blue-500" />
+                            <span className="text-sm">{job.experience} experience</span>
+                        </div>
+                    )}
+                    {job?.jobType && (
+                        <div className="flex items-center p-2 rounded-lg border border-gray-100 bg-gray-50 shadow-sm w-full">
+                            <Briefcase size={16} className="mr-2 text-blue-500" />
+                            <span className="text-sm">{job.jobType}</span>
+                        </div>
+                    )}
+                    {job?.salary && (
+                        <div className="flex items-center p-2 rounded-lg border border-gray-100 bg-gray-50 shadow-sm w-full">
+                            <span className="mr-2 font-medium text-green-500">฿</span>
+                            <span className="text-sm font-medium text-green-600">{formatSalary(job.salary)}</span>
+                        </div>
+                    )}
+                    {job?.position && (
+                        <div className="flex items-center p-2 rounded-lg border border-gray-100 bg-gray-50 shadow-sm w-full">
+                            <User size={16} className="mr-2 text-blue-500" />
+                            <span className="text-sm break-all whitespace-pre-wrap min-w-[150px]">{job.position}{job.position > 1 ? 's' : ''}</span>
+                        </div>
+                    )}
                 </div>
-                <div>
-                    <h2 className='font-semibold text-gray-800'>{job?.company?.name || "Company Name"}</h2>
-                </div>
             </div>
 
-            <div className="my-3">
-                <h1 className='font-bold text-lg text-gray-900 mb-2'>{job?.title || "Job Title"}</h1>
-                <p className='text-sm text-gray-600 line-clamp-2'>{job?.description || "No description available"}</p>
-            </div>
-
-            <div className='flex flex-wrap items-center gap-2 mt-3'>
-                <Badge className='bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100' variant="outline">
-                    {job?.position || 0} {(job?.position === 1) ? 'Position' : 'Positions'}
-                </Badge>
-                <Badge className='bg-red-50 text-red-600 border-red-200 hover:bg-red-100' variant="outline">
-                    {job?.jobType || "Full-time"}
-                </Badge>
-                <Badge className='bg-green-50 text-green-600 border-green-200 hover:bg-green-100' variant="outline">
-                    {job?.salary ? `${job?.salary}฿` : "฿"}
-                </Badge>
-            </div>
-
-            <div className='flex items-center gap-3 mt-4'>
+            {/* Action buttons */}
+            <div className="mt-auto flex items-center gap-3">
                 <Button
                     onClick={() => navigate(`/description/${job?._id}`)}
                     variant="outline"
@@ -89,8 +134,18 @@ const Job = ({ job }) => {
                     Save For Later
                 </Button>
             </div>
-        </div>
-    )
-}
 
-export default Job
+            {/* View details hover effect */}
+            <div className="mt-4 absolute bottom-4 right-6 transform translate-x-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+                <div
+                    className="flex items-center text-blue-500 font-medium"
+                    onClick={() => navigate(`/description/${job?._id}`)}
+                >
+
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default Job;
