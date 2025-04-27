@@ -33,10 +33,11 @@ const Login = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                withCredentials: true,
+                withCredentials: true, // ส่ง cookies ไปด้วย
             });
             if (res.data.success) {
-                dispatch(setUser(res.data.user));
+                dispatch(setUser(res.data.user));  // เก็บข้อมูลผู้ใช้ใน Redux
+                localStorage.setItem('user', JSON.stringify(res.data.user));  // เก็บข้อมูลผู้ใช้ใน localStorage
                 navigate('/');
                 toast.success(res.data.message);
             }
@@ -47,6 +48,7 @@ const Login = () => {
             dispatch(setLoading(false));
         }
     };
+
 
     useEffect(() => {
         if (user) {
