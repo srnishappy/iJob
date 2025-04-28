@@ -17,14 +17,14 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { JOB_API_END_POINT } from "@/utils/constant";
+import { APPLICATION_API_END_POINT, JOB_API_END_POINT } from "@/utils/constant";
 import { setSingleJob } from "@/redux/jobSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const JobDescription = () => {
-    const isApplied = true; // This is your state to determine if the job is already applied
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const params = useParams();
@@ -32,6 +32,32 @@ const JobDescription = () => {
     const { singleJob, allJobs } = useSelector((store) => store.job);
     const { user } = useSelector((store) => store.auth);
     const [loading, setLoading] = useState(true);
+    const isIntiallyApplied = singleJob?.applications?.some(application => application.applicant === user?._id) || false;
+    const [isApplied, setIsApplied] = useState(isIntiallyApplied);
+    const applyJobHandler = async () => {
+        try {
+            const res = await axios.post(
+                `${APPLICATION_API_END_POINT}/apply/${Jobid}`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${user?.token}`,
+                    },
+                    withCredentials: true,
+                }
+            );
+
+            if (res.data.success) {
+                setIsApplied(true);
+                const updatedSingleJob = { ...singleJob, applications: [...singleJob.applications, { applicant: user?._id }] }
+                dispatch(setSingleJob(updatedSingleJob));
+                toast.success(res.data.message);
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error(error.response?.data?.message || 'Something went wrong');
+        }
+    }
 
     useEffect(() => {
         const fetchSingleJob = async () => {
@@ -234,7 +260,8 @@ const JobDescription = () => {
                         {/* Apply Button - Single Button Only */}
                         <div className="mt-10 text-center">
                             <Button
-                                onClick={() => console.log("Apply clicked")}
+
+                                onClick={isApplied ? null : applyJobHandler}
                                 disabled={isApplied}
                                 className={`rounded-lg px-8 py-4 text-white font-medium shadow-md transition transform hover:translate-y-px ${isApplied
                                     ? 'bg-gray-400 cursor-not-allowed'
