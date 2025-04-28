@@ -6,6 +6,8 @@ import { useSelector } from 'react-redux';
 
 const Jobs = () => {
     const { allJobs } = useSelector(store => store.job);
+    console.log(allJobs);
+
     return (
         <div className="min-h-screen flex flex-col overflow-hidden bg-gray-50">
             <Navbar />

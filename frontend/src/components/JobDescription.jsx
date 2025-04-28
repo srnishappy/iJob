@@ -219,7 +219,7 @@ const JobDescription = () => {
                                 <InfoItem
                                     icon={<Users className="text-purple-600" />}
                                     label="Total Applicants"
-                                    value={singleJob?.totalApplicants || 0}
+                                    value={singleJob?.applications?.length || 0}
                                 />
                                 <InfoItem
                                     icon={<CalendarDays className="text-red-600" />}
