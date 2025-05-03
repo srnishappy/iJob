@@ -5,32 +5,63 @@ import getDataUri from "../utils/datauri.js";
 import cloudinary from "../utils/cloudinary.js";
 export const register = async (req, res) => {
   try {
-    const { fullname, email, phoneNumber, password, role } = req.body;
+    let { fullname, email, phoneNumber, password, role } = req.body;
+
+    // ตรวจสอบว่ามีการกรอกข้อมูลครบหรือไม่
     if (!fullname || !email || !phoneNumber || !password || !role) {
-      return res
-        .status(400)
-        .json({ success: false, message: 'All fields are required' });
+      return res.status(400).json({ success: false, message: 'All fields are required' });
     }
+
+
+    fullname = fullname.trim();
+    email = email.trim();
+    phoneNumber = phoneNumber.trim();
+    password = password.trim();
+
+    if (fullname.length === 0 || email.length === 0 || phoneNumber.length === 0 || password.length === 0) {
+      return res.status(400).json({ success: false, message: 'Fields cannot be empty or have spaces' });
+    }
+
+    // ตรวจสอบว่า email ถูกต้องหรือไม่
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ success: false, message: 'Invalid email format' });
+    }
+
+    // ตรวจสอบว่า password ถูกต้องหรือไม่ (ควรมีความยาวขั้นต่ำ 6 ตัวอักษร)
+    if (password.length < 6) {
+      return res.status(400).json({ success: false, message: 'Password must be at least 6 characters long' });
+    }
+
+    // ตรวจสอบว่าไฟล์มีหรือไม่
     const file = req.file;
-    const fileUri = getDataUri(file);
-    const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+    let profilePhotoUrl = '';
+    
+    if (file) {
+      const fileUri = getDataUri(file);
+      const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+      profilePhotoUrl = cloudResponse.secure_url; // ได้ URL ของไฟล์ที่อัพโหลดแล้ว
+    }
+
+    // เช็คว่าอีเมลมีอยู่ในระบบแล้วหรือไม่
     const user = await User.findOne({ email });
     if (user) {
-      return res
-        .status(400)
-        .json({ success: false, message: 'User already exists' });
+      return res.status(400).json({ success: false, message: 'User already exists' });
     }
+
+    // เข้ารหัสรหัสผ่าน
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // สร้างผู้ใช้ใหม่ในฐานข้อมูล
     await User.create({
       fullname,
       email,
       phoneNumber,
       password: hashedPassword,
       role,
-      profile:{
-        profilePhoto:cloudResponse.secure_url,
-    }
+      profile: {
+        profilePhoto: profilePhotoUrl,
+      },
     });
 
     return res.status(201).json({
@@ -42,6 +73,7 @@ export const register = async (req, res) => {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 export const login = async (req, res) => {
   try {
