@@ -9,6 +9,7 @@ import Jobs from './components/Jobs';
 import Browse from './components/ฺBrowse';
 import Profile from './components/Profile';
 import JobDescription from './components/JobDescription';
+import Componies from './components/admin/Componies';
 
 const appRouter = createBrowserRouter([
   {
@@ -39,11 +40,17 @@ const appRouter = createBrowserRouter([
     path: '/description/:id',
     element: <JobDescription />,
   },
+  {
+    path: '/admin/companies',
+    element: <Componies />,
+  },
+  // admin
 ]);
+
 
 function App() {
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth); // ตรวจสอบข้อมูลผู้ใช้จาก Redux
+  const { user } = useSelector((state) => state.auth);
 
   // ตรวจสอบข้อมูลใน localStorage และตั้งค่า Redux
   useEffect(() => {

@@ -16,6 +16,7 @@ const Navbar = () => {
   const { user } = useSelector((store) => store.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const logoutHandler = async () => {
     try {
       const res = await axios.post(`${USER_API_END_POINT}/logout`, { withCredentials: true });
@@ -28,8 +29,8 @@ const Navbar = () => {
       console.log(error);
       toast.error(error.response.data.message);
     }
+  };
 
-  }
   return (
     <header className="bg-gray-900 text-white shadow-sm border-b border-gray-800">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -54,18 +55,35 @@ const Navbar = () => {
 
         {/* Nav Menu Desktop */}
         <nav className="hidden md:flex items-center gap-10">
-          {[{ to: '/', icon: Home, label: 'Home' }, { to: '/jobs', icon: Briefcase, label: 'Jobs' }, { to: '/browse', icon: Search, label: 'Browse' }]
-            .map(({ to, icon: Icon, label }) => (
-              <Link
-                key={label}
-                to={to}
-                className="flex flex-col items-center text-sm text-gray-300 hover:text-blue-400 transition group"
-              >
-                <Icon size={18} />
-                <span>{label}</span>
-                <div className="h-0.5 w-full bg-blue-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left mt-0.5"></div>
-              </Link>
-            ))}
+          {
+            user && user.role === 'recruiter' ? (
+              <>
+                <Link to="/admin/companies" className="flex flex-col items-center text-sm text-gray-300 hover:text-blue-400 transition group">
+                  <Briefcase size={18} />
+                  <span>Companies</span>
+                  <div className="h-0.5 w-full bg-blue-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left mt-0.5"></div>
+                </Link>
+                <Link to="/admin/jobs" className="flex flex-col items-center text-sm text-gray-300 hover:text-blue-400 transition group">
+                  <Search size={18} />
+                  <span>Jobs</span>
+                  <div className="h-0.5 w-full bg-blue-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left mt-0.5"></div>
+                </Link>
+              </>
+            ) : (
+              [{ to: '/', icon: Home, label: 'Home' }, { to: '/jobs', icon: Briefcase, label: 'Jobs' }, { to: '/browse', icon: Search, label: 'Browse' }]
+                .map(({ to, icon: Icon, label }) => (
+                  <Link
+                    key={label}
+                    to={to}
+                    className="flex flex-col items-center text-sm text-gray-300 hover:text-blue-400 transition group"
+                  >
+                    <Icon size={18} />
+                    <span>{label}</span>
+                    <div className="h-0.5 w-full bg-blue-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left mt-0.5"></div>
+                  </Link>
+                ))
+            )
+          }
         </nav>
 
         {/* User Section */}
@@ -106,10 +124,15 @@ const Navbar = () => {
                 </div>
               </div>
               <div className="p-2">
-                <div className="text-xs text-gray-500 uppercase px-2 py-1">Account</div>
-                <Button variant="ghost" className="w-full justify-start text-gray-300 hover:text-white hover:bg-gray-700">
-                  <User size={16} className="mr-2" /> <Link to="/profile"> View Profile</Link>
-                </Button>
+
+
+                {/* Don't show View Profile if role is 'recruiter' */}
+                {user.role !== 'recruiter' && (
+                  <Button variant="ghost" className="w-full justify-start text-gray-300 hover:text-white hover:bg-gray-700">
+                    <User size={16} className="mr-2" /> <Link to="/profile"> View Profile</Link>
+                  </Button>
+                )}
+
                 <div className="text-xs text-gray-500 uppercase px-2 py-1 mt-3">Session</div>
                 <Button
                   onClick={logoutHandler}
@@ -125,18 +148,33 @@ const Navbar = () => {
       {/* Mobile Menu Dropdown */}
       {menuOpen && (
         <div className="md:hidden bg-gray-800 border-t border-gray-700 px-6 py-4 space-y-3">
-          {[{ to: '/', icon: Home, label: 'Home' }, { to: '/jobs', icon: Briefcase, label: 'Jobs' }, { to: '/browse', icon: Search, label: 'Browse' }]
-            .map(({ to, icon: Icon, label }) => (
-              <Link
-                key={label}
-                to={to}
-                className="flex items-center gap-2 text-gray-300 hover:text-blue-400 transition"
-                onClick={() => setMenuOpen(false)}
-              >
-                <Icon size={18} />
-                <span>{label}</span>
-              </Link>
-            ))}
+          {
+            user && user.role === 'recruiter' ? (
+              <>
+                <Link to="/admin/companies" className="flex items-center gap-2 text-gray-300 hover:text-blue-400 transition" onClick={() => setMenuOpen(false)}>
+                  <Briefcase size={18} />
+                  <span>Companies</span>
+                </Link>
+                <Link to="/admin/jobs" className="flex items-center gap-2 text-gray-300 hover:text-blue-400 transition" onClick={() => setMenuOpen(false)}>
+                  <Search size={18} />
+                  <span>Jobs</span>
+                </Link>
+              </>
+            ) : (
+              [{ to: '/', icon: Home, label: 'Home' }, { to: '/jobs', icon: Briefcase, label: 'Jobs' }, { to: '/browse', icon: Search, label: 'Browse' }]
+                .map(({ to, icon: Icon, label }) => (
+                  <Link
+                    key={label}
+                    to={to}
+                    className="flex items-center gap-2 text-gray-300 hover:text-blue-400 transition"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    <Icon size={18} />
+                    <span>{label}</span>
+                  </Link>
+                ))
+            )
+          }
 
           {!user && (
             <div className="pt-3 border-t border-gray-700 flex gap-2">
@@ -165,12 +203,17 @@ const Navbar = () => {
                   <p className="text-xs text-gray-400">{user?.profile?.bio}</p>
                 </div>
               </div>
-              <Button
-                variant="ghost"
-                className="w-full justify-start text-gray-300 hover:text-white hover:bg-gray-700"
-              >
-                <User size={16} className="mr-2" />  <Link to="/profile"> View Profile</Link>
-              </Button>
+
+              {/* Don't show View Profile if role is 'recruiter' */}
+              {user.role !== 'recruiter' && (
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start text-gray-300 hover:text-white hover:bg-gray-700"
+                >
+                  <User size={16} className="mr-2" />  <Link to="/profile"> View Profile</Link>
+                </Button>
+              )}
+
               <Button
                 onClick={logoutHandler}
                 variant="ghost"
