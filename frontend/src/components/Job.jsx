@@ -112,7 +112,7 @@ const Job = ({ job }) => {
                     {job?.position && (
                         <div className="flex items-center p-2 rounded-lg border border-gray-100 bg-gray-50 shadow-sm w-full">
                             <User size={16} className="mr-2 text-blue-500" />
-                            <span className="text-sm break-all whitespace-pre-wrap min-w-[150px]">{job.position}{job.position > 1 ? 's' : ''}</span>
+                            <span className="text-sm break-all whitespace-pre-wrap min-w-[150px]">{job.position}{job.position > 1 ? ' person' : ''}</span>
                         </div>
                     )}
                 </div>

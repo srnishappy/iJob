@@ -9,10 +9,10 @@ import { setSearchedQuery } from '@/redux/jobSlice';
 const filterData = [
     {
         filterType: "Location",
-        array: ["Bangkok", "Chiang Mai", "Phuket", "Pattaya", "Khon Kaen", "Hat Yai", "Chonburi", "Nonthaburi", "Udon Thani", "Ayutthaya"]
+        array: ["Bangkok", "Chiang Mai", "Phuket", "Pattaya",]
     },
     {
-        filterType: "Industry",
+        filterType: "Position",
         array: ["Frontend Developer", "Backend Developer", "Full Stack Developer", "Mobile Developer", "DevOps Engineer", "UI/UX Developer", "QA Engineer", "Game Developer", "Blockchain Developer", "AI/ML Engineer"]
     },
 

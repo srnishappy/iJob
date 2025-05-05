@@ -1,16 +1,30 @@
-import { Code, TrendingUp, Users, Pencil, Clipboard, BarChart } from "lucide-react"
+import {
+    Code,
+    Smartphone,
+    Server,
+    MonitorSmartphone,
+    Settings,
+    Brush,
+    Bug,
+    Gamepad2,
+    ShieldCheck,
+    BrainCircuit
+} from "lucide-react"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "./ui/carousel"
 import { Button } from "./ui/button"
 
 const Category = () => {
     const category = [
-        { name: "Software Engineer", icon: <Code className="w-4 h-4" /> },
-        { name: "Graphic Designer", icon: <Pencil className="w-4 h-4" /> },
-        { name: "Product Manager", icon: <Clipboard className="w-4 h-4" /> },
-        { name: "HR Manager", icon: <Users className="w-4 h-4" /> },
-        { name: "Business Analyst", icon: <BarChart className="w-4 h-4" /> },
-        { name: "Web Developer", icon: <Code className="w-4 h-4" /> },
-        { name: "Data Scientist", icon: <BarChart className="w-4 h-4" /> }
+        { name: "Frontend Developer", icon: <MonitorSmartphone className="w-4 h-4" /> },
+        { name: "Backend Developer", icon: <Server className="w-4 h-4" /> },
+        { name: "Full Stack Developer", icon: <Code className="w-4 h-4" /> },
+        { name: "Mobile Developer", icon: <Smartphone className="w-4 h-4" /> },
+        { name: "DevOps Engineer", icon: <Settings className="w-4 h-4" /> },
+        { name: "UI/UX Developer", icon: <Brush className="w-4 h-4" /> },
+        { name: "QA Engineer", icon: <Bug className="w-4 h-4" /> },
+        { name: "Game Developer", icon: <Gamepad2 className="w-4 h-4" /> },
+        { name: "Blockchain Developer", icon: <ShieldCheck className="w-4 h-4" /> },
+        { name: "AI/ML Engineer", icon: <BrainCircuit className="w-4 h-4" /> },
     ]
 
     return (
