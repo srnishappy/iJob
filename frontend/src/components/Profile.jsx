@@ -8,6 +8,7 @@ import { Badge } from "./ui/badge";
 import AppliedJobTable from "./AppliedJobTable";
 import UpdateProfileDialog from "./UpdateProfileDialog";
 import { useSelector } from "react-redux";
+import useGetAppliedJobs from "@/hooks/useGetAppliedJobs";
 
 const Profile = () => {
     const [open, setOpen] = useState(false);
@@ -38,6 +39,7 @@ const Profile = () => {
         }
         return phone;
     };
+    useGetAppliedJobs();
 
     return (
         <div className="min-h-screen text-gray-900 bg-gray-50">

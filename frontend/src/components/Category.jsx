@@ -5,7 +5,6 @@ import { Button } from "./ui/button"
 const Category = () => {
     const category = [
         { name: "Software Engineer", icon: <Code className="w-4 h-4" /> },
-        { name: "Marketing Specialist", icon: <TrendingUp className="w-4 h-4" /> },
         { name: "Graphic Designer", icon: <Pencil className="w-4 h-4" /> },
         { name: "Product Manager", icon: <Clipboard className="w-4 h-4" /> },
         { name: "HR Manager", icon: <Users className="w-4 h-4" /> },

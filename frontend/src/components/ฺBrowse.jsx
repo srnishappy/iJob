@@ -1,11 +1,20 @@
+import useGetAllJobs from "@/hooks/useGetAlljobs";
 import Job from "./Job";
 import Navbar from "./shared/Navbar";
 import { motion } from "framer-motion";
 import { Search } from "lucide-react";
-
+import { useDispatch, useSelector } from 'react-redux';
+import { setSearchedQuery } from '@/redux/jobSlice';
+import { useEffect } from "react";
 const Browse = () => {
-    const randomJobs = [1, 2, 3, 4];
-
+    useGetAllJobs()
+    const { allJobs } = useSelector(store => store.job);
+    const dispatch = useDispatch();
+    useEffect(() => {
+        return () => {
+            dispatch(setSearchedQuery(""));
+        }
+    }, [])
     const textVariants = {
         hidden: { opacity: 0, scale: 0.8, y: 30 },
         visible: {
@@ -38,11 +47,11 @@ const Browse = () => {
                 >
                     <Search className="w-6 h-6 text-blue-500" />
                     <h1 className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-blue-600 drop-shadow-md">
-                        Search Results ({randomJobs.length})
+                        Search Results ({allJobs.length})
                     </h1>
                 </motion.div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {randomJobs.map((job, index) => (
+                    {allJobs.map((job, index) => (
                         <motion.div
                             key={job}
                             variants={jobVariants}

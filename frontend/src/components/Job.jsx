@@ -70,7 +70,6 @@ const Job = ({ job }) => {
                             e.stopPropagation();
                         }}
                     >
-                        <Bookmark className="text-gray-400 hover:text-blue-500" size={16} />
                     </Button>
                 </div>
                 {job?.location && (
@@ -124,15 +123,11 @@ const Job = ({ job }) => {
                 <Button
                     onClick={() => navigate(`/description/${job?._id}`)}
                     variant="outline"
-                    className="hover:bg-gray-100 font-medium border-gray-300 flex-1"
+                    className="bg-blue-600 hover:bg-blue-700 font-medium flex-1 text-white"
                 >
                     Details
                 </Button>
-                <Button
-                    className="bg-blue-600 hover:bg-blue-700 font-medium flex-1"
-                >
-                    Save For Later
-                </Button>
+
             </div>
 
             {/* View details hover effect */}

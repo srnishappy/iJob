@@ -1,8 +1,19 @@
 import { Search, Briefcase, Users, Building, Code, TrendingUp } from "lucide-react"
 import { Button } from "./ui/button"
 import Category from "./Category"
-
+import { useDispatch } from 'react-redux';
+import { setSearchedQuery } from '@/redux/jobSlice';
+import { useNavigate } from 'react-router-dom'
+import { useState } from "react";
 const HeroSection = () => {
+    const [query, setQuery] = useState("");
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const searchJobHandler = () => {
+        dispatch(setSearchedQuery(query));
+        navigate("/browse");
+    }
     return (
         <div className="relative overflow-hidden">
             {/* Background pattern */}
@@ -24,10 +35,14 @@ const HeroSection = () => {
                         <div className="flex w-full max-w-lg shadow-lg border border-gray-200 pl-5 rounded-full items-center gap-3 mx-auto mt-6">
                             <input
                                 type="text"
-                                placeholder=""
-                                className="outline-none border-none w-full text-sm text-gray-700 placeholder-gray-400"
+                                placeholder='Find your jobs'
+                                onChange={(e) => setQuery(e.target.value)}
+                                className='outline-none border-none w-full'
+
                             />
-                            <Button className="rounded-r-full bg-blue-500">
+                            <Button
+                                onClick={searchJobHandler}
+                                className="rounded-r-full bg-blue-500">
                                 <Search className='h-5 w-5' />
                             </Button>
                         </div>

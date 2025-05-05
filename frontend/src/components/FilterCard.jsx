@@ -1,65 +1,131 @@
-import { Label } from "./ui/label"
-import { RadioGroup, RadioGroupItem } from "./ui/radio-group"
-import { MapPin, Briefcase, Banknote, Filter } from "lucide-react"
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { motion } from 'framer-motion';
+import { Filter, X } from 'lucide-react';
+import { RadioGroup, RadioGroupItem } from './ui/radio-group';
+import { Label } from './ui/label';
+import { setSearchedQuery } from '@/redux/jobSlice';
+
+const filterData = [
+    {
+        filterType: "Location",
+        array: ["Bangkok", "Chiang Mai", "Phuket", "Pattaya", "Khon Kaen", "Hat Yai", "Chonburi", "Nonthaburi", "Udon Thani", "Ayutthaya"]
+    },
+    {
+        filterType: "Industry",
+        array: ["Frontend Developer", "Backend Developer", "Full Stack Developer", "Mobile Developer", "DevOps Engineer", "UI/UX Developer", "QA Engineer", "Game Developer", "Blockchain Developer", "AI/ML Engineer"]
+    },
+
+];
 
 const FilterCard = () => {
-    const filterData = [
-        {
-            filterType: "Location",
-            icon: MapPin,
-            array: ["Delhi NCR", "Bangalore", "Hyderabad", "Pune", "Mumbai"]
-        },
-        {
-            filterType: "Industry",
-            icon: Briefcase,
-            array: ["Frontend Developer", "Backend Developer", "FullStack Developer"]
-        },
-        {
-            filterType: "Salary",
-            icon: Banknote,
-            array: ["0-40k", "42-1lakh", "1lakh to 5lakh"]
-        },
-    ]
+    const [selectedValue, setSelectedValue] = useState('');
+    const [isFilterVisible, setIsFilterVisible] = useState(false);
+    const dispatch = useDispatch();
+
+    const changeHandler = (value) => {
+        setSelectedValue(value);
+    };
+
+    const clearFilters = () => {
+        setSelectedValue('');
+    };
+
+    useEffect(() => {
+        dispatch(setSearchedQuery(selectedValue));
+    }, [selectedValue, dispatch]);
+
+    // Show filters on desktop by default, but hide on mobile until toggled
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth >= 1024) {
+                setIsFilterVisible(true);
+            } else {
+                setIsFilterVisible(false);
+            }
+        };
+
+        // Initial setup
+        handleResize();
+
+        // Listen for window resize
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     return (
-        <div className="w-full bg-white p-5 rounded-lg shadow-md border border-gray-100">
-            <div className="flex items-center space-x-2 mb-4">
-                <Filter size={18} className="text-blue-600" />
-                <h1 className="font-bold text-xl text-gray-800">Filter Jobs</h1>
+        <div className="w-full bg-white rounded-lg shadow-sm border border-gray-100">
+            {/* Filter Header */}
+            <div className="p-4 flex justify-between items-center border-b border-gray-100">
+                <div className="flex items-center">
+                    <Filter className="h-5 w-5 mr-2 text-blue-600" />
+                    <h1 className="font-bold text-lg text-gray-800">Filter Jobs</h1>
+                </div>
+                <div className="flex items-center gap-2">
+                    {selectedValue && (
+                        <button
+                            onClick={clearFilters}
+                            className="text-sm text-blue-600 hover:text-blue-800 flex items-center"
+                        >
+                            <X className="h-4 w-4 mr-1" />
+                            Clear
+                        </button>
+                    )}
+                    <button
+                        className="lg:hidden p-1.5 rounded-md bg-gray-100 hover:bg-gray-200 transition-colors"
+                        onClick={() => setIsFilterVisible(!isFilterVisible)}
+                    >
+                        {isFilterVisible ?
+                            <X className="h-4 w-4" /> :
+                            <Filter className="h-4 w-4" />
+                        }
+                    </button>
+                </div>
             </div>
 
-            <RadioGroup>
-                {filterData.map((item, index) => {
-                    const Icon = item.icon;
-                    return (
-                        <div key={index} className="mb-5">
-                            <div className="flex items-center space-x-2 mb-2">
-                                <Icon size={16} className="text-blue-600" />
-                                <h2 className="font-semibold text-gray-700">{item.filterType}</h2>
+            {/* Filter Content */}
+            {isFilterVisible && (
+                <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="p-4"
+                >
+                    <RadioGroup value={selectedValue} onValueChange={changeHandler}>
+                        {filterData.map((data, index) => (
+                            <div key={index} className="mb-6 last:mb-0">
+                                <h2 className="font-bold text-md text-gray-700 mb-2 flex items-center">
+                                    {data.filterType}
+                                    {selectedValue && data.array.includes(selectedValue) && (
+                                        <span className="ml-2 text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">
+                                            Active
+                                        </span>
+                                    )}
+                                </h2>
+                                <div className="ml-1 space-y-2">
+                                    {data.array.map((item, idx) => {
+                                        const itemId = `id${index}-${idx}`;
+                                        return (
+                                            <div key={itemId} className="flex items-center space-x-2 hover:bg-gray-50 rounded-md p-1 transition-colors cursor-pointer">
+                                                <RadioGroupItem value={item} id={itemId} />
+                                                <Label
+                                                    htmlFor={itemId}
+                                                    className={`cursor-pointer text-sm ${selectedValue === item ? 'text-blue-600 font-medium' : 'text-gray-600'}`}
+                                                >
+                                                    {item}
+                                                </Label>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
                             </div>
-                            <div className="ml-6">
-                                {item.array.map((value, idx) => (
-                                    <div key={idx} className="flex items-center space-x-3 mb-3">
-                                        <RadioGroupItem
-                                            value={value}
-                                            id={`${item.filterType}-${idx}`}
-                                            className="border-gray-400 focus:ring-blue-500"
-                                        />
-                                        <Label
-                                            htmlFor={`${item.filterType}-${idx}`}
-                                            className="text-gray-600 cursor-pointer hover:text-blue-500 transition-colors"
-                                        >
-                                            {value}
-                                        </Label>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )
-                })}
-            </RadioGroup>
+                        ))}
+                    </RadioGroup>
+                </motion.div>
+            )}
         </div>
-    )
-}
+    );
+};
 
-export default FilterCard
+export default FilterCard;

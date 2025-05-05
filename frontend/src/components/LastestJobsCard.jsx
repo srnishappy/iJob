@@ -1,12 +1,12 @@
-import { Badge } from "./ui/badge";
-import { MapPin, Briefcase, User, Clock, Award, ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { MapPin, User, Clock, Award, ChevronRight } from "lucide-react";
 
 const LastestJobsCard = ({ job }) => {
     const formatSalary = (salary) => {
         if (!salary) return "Not specified";
         return `${salary.toLocaleString()} ฿`;
     };
-
+    const navigate = useNavigate();
     return (
         <div className="h-full flex flex-col justify-between p-6 rounded-2xl shadow-lg bg-white border border-gray-200 cursor-pointer transform hover:scale-105 transition-all duration-300 ease-in-out hover:shadow-xl relative overflow-hidden group">
             {/* Decorative elements */}
@@ -74,7 +74,7 @@ const LastestJobsCard = ({ job }) => {
             {/* View details */}
             <div className="mt-auto absolute bottom-4 right-6 transform translate-x-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
                 <div className="flex items-center text-blue-500 font-medium">
-                    <span className="mr-1">View Details</span>
+                    <span onClick={() => navigate(`/description/${job._id}`)} className="mr-1">View Details</span>
                     <ChevronRight size={16} />
                 </div>
             </div>
