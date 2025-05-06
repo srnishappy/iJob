@@ -1,4 +1,4 @@
-# 💼 Project Setup Guide
+# 💼 iJob-Project Setup Guide
 
 Welcome to **iJob**, a full-stack job posting platform built with the **MERN stack**, styled using **Tailwind CSS** and **shadcn/ui**, with support for image uploads via **Cloudinary**, and admin tools to manage job posts and view applicants.
 
